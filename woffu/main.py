@@ -2,7 +2,7 @@ import getpass
 import json
 from operator import itemgetter
 import os.path
-from . import woffu
+from .woffu import Woffu
 
 def run():
     print("Woffu Autologin Script\n")
@@ -21,15 +21,12 @@ def run():
         username = input("Enter your Woffu username:\n")
         password = getpass.getpass("Enter your password:\n")
 
-    auth_headers = woffu.get_auth_headers(username, password)
+    client = Woffu(username, password)
 
-    if (not saved_credentials):
-        domain, user_id, company_id = woffu.get_domain_company_user_id(auth_headers)
-
-    if (woffu.sign_in(domain, user_id, auth_headers)):
+    if (client.sign_in()):
         print ("Success!")
     else:
         print ("Something went wrong when trying to log you in/out.")
 
     if (not saved_credentials):
-        woffu.save_data(username, password, user_id, company_id, domain)
+        client.save_data()

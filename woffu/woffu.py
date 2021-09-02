@@ -1,12 +1,9 @@
 import requests
 import json
-import os.path
-import getpass
 from datetime import datetime
-from operator import itemgetter
 
 # aux functions
-def getAuthHeaders(username, password):
+def get_auth_headers(username, password):
     # we need to get the Bearer access token for every request we make to Woffu
     print("Getting access token...\n")
     access_token = requests.post(
@@ -19,7 +16,8 @@ def getAuthHeaders(username, password):
         'Content-Type': 'application/json;charset=utf-8'
     }
 
-def getDomainUserCompanyId(auth_headers):
+
+def get_domain_company_user_id(auth_headers):
     # This function should only be called the first time the script runs.
     # We'll store the results for subsequent executions
     print("Getting IDs...\n")
@@ -33,7 +31,8 @@ def getDomainUserCompanyId(auth_headers):
     ).json()
     return company['Domain'], users['UserId'], users['CompanyId']
 
-def signIn(domain, user_id, auth_headers):
+
+def sign_in(domain, user_id, auth_headers):
     #Actually log in
     print("Sending sign request...\n")
     return requests.post(
@@ -47,7 +46,8 @@ def signIn(domain, user_id, auth_headers):
         headers = auth_headers
     ).ok
 
-def saveData(username, password, user_id, company_id, domain):
+
+def save_data(username, password, user_id, company_id, domain):
     #Store user/password/id to make less network requests in next logins
     with open("data.json", "w") as login_info:
         json.dump(
@@ -61,31 +61,23 @@ def saveData(username, password, user_id, company_id, domain):
             login_info
         )
 
-print("Woffu Autologin Script\n")
-saved_credentials = os.path.exists("./data.json")
-if (saved_credentials):
-    with open("./data.json", "r") as json_data:
-        login_info = json.load(json_data)
-        domain, username, password, user_id, company_id = itemgetter(
-            "domain",
-            "username",
-            "password",
-            "user_id",
-            "company_id"
-        )(login_info)
-else:
-    username = input("Enter your Woffu username:\n")
-    password = getpass.getpass("Enter your password:\n")
 
-auth_headers = getAuthHeaders(username, password)
+def get_holidays(domain, user_id, auth_headers):
+    holidays = requests.get(
+        f"https://{domain}/api/users/{user_id}/requests?pageSize=1000", 
+        headers = auth_headers
+    ).json()
+    return holidays
 
-if (not saved_credentials):
-    domain, user_id, company_id = getDomainUserCompanyId(auth_headers)
 
-if (signIn(domain, user_id, auth_headers)):
-    print ("Success!")
-else:
-    print ("Something went wrong when trying to log you in/out.")
+def get_pending_holidays(domain, user_id, auth_headers):
+    pending_holidays = [req for req in get_holidays(domain, user_id, auth_headers)
+        if req['RequestStatusId'] == 20 and req['RequestStatus'] == '_RequestStatusAcceptedAndPending']
+    return pending_holidays
 
-if (not saved_credentials):
-    saveData(username, password, user_id, company_id, domain)
+
+def should_I_sign_in_today(domain, user_id, auth_headers):
+    pending_holidays = get_pending_holidays(domain, user_id, auth_headers)
+    today = datetime.today()
+    should_i = any([(today >= datetime.datetime.fromisoformat(h['StartDate']).date() and today <= datetime.datetime.fromisoformat(h['EndDate']).date()) for h in pending_holidays])
+    return should_i

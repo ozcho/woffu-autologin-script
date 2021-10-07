@@ -46,19 +46,6 @@ class Woffu:
             headers = self.auth_headers
         ).ok
 
-    def save_data(self):
-        #Store user/password/id to make less network requests in next logins
-        with open("data.json", "w") as login_info:
-            json.dump(
-                {
-                    "username": self.username,
-                    "password": self.password,
-                    "user_id": self.user_id,
-                    "company_id": self.company_id,
-                    "domain": self.domain
-                },
-                login_info
-            )
 
     def get_holidays(self):
         holidays = requests.get(

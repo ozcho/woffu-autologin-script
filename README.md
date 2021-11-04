@@ -11,11 +11,24 @@ A new law in my country is forcing people to check in and out of their jobs, eve
 like a boring, useless chore that could be automated, and what is programming if not automating tasks to make our lifes easier.
 
 ## How to use
+You need to configure WOFFU_USER and WOFFU_PASS as environment variables.
+
 You need Python 3.6+ (f-strings rock!), and [the requests library](https://pypi.org/project/requests/).
 
 You'll be prompted to enter your user and password the first time it starts, and that's it, you don't have to do anything else
 but to execute the script whenever you want to log in or out.
 
+## How to integrate in AWS Lambda
+Open this link and find the region that your function is using:
+https://github.com/keithrozario/Klayers/tree/master/deployments/python3.8/arns
+
+Open the .csv related to your region and search for the requests row.
+This is the ARN related to requests library:
+arn:aws:lambda:us-east-1:770693421928:layer:Klayers-python38-requests:6
+
+So now in your lambda function, add a layer using the ARN found.
+
+Also need to add WOFFU_USER and WOFFU_PASS variables in configuration.
 ## Caveats
 ### Passwords
 This forks substitutes the JSON credentials file in favor of environment variables.

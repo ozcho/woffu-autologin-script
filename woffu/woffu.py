@@ -11,6 +11,10 @@ class Woffu:
         self.domain, self.user_id, self.company_id = self._get_domain_company_user_id()
 
     # aux functions
+    def sendTelegram(self, token, chatId, message):
+        url=f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chatId}&text={message}"
+        return requests.get(url).json()
+
     def _get_auth_headers(self):
         access_token = requests.post(
             "https://app.woffu.com/token",

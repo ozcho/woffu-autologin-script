@@ -43,3 +43,10 @@ it should be really easy.
 The timezone is hardcoded, and I've set it up to UTC+1. If you live in a different timezone, change 
 the 'StartDate', 'EndDate' and 'TimezoneOffset' values in the signIn() function. 
 
+### Telegram integration
+If setted TELEGRAM_TOKEN and TELEGRAM_CHATID it will notify via telegram.
+TELEGRAM_TOKEN is the telegram bot token
+TELEGRAM_CHATID is the telegram chat id
+You can set up your bot chatting with @BotFather and get your token.
+Then you have to start a chat with your bot and send a /start command to it.
+To get the chat id you can query (maybe via postman) this url https://api.telegram.org/bot{token}/getUpdates

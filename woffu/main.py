@@ -4,29 +4,47 @@ from random import randint
 from time import sleep
 
 class Main:
+    
+    def __init__(self):
+        self.sendMessage=True
+        self.token=False
+
+
+    def shouldSendMessage(self):
+        if(not self.token):
+            return False
+        if(os.getenv("WOFFU_DEBUG")):
+            return True
+        return self.sendMessage
         
-    def run():
+    def run(self):
         print("Woffu Autologin Script\n")
         randomTime=randint(1,100)
         sleep(randomTime)
         username=os.getenv('WOFFU_USER')
         password=os.getenv('WOFFU_PASS')
-        token=os.getenv('TELEGRAM_TOKEN')
+        self.token=os.getenv('TELEGRAM_TOKEN')
 
         client = Woffu(username, password)
+        message="empty message"
         if(client.is_working_day_for_me()):
-            message="empty message"
-            if (client.sign_in()):
-                message=f"Correctly signed in/out. Waited {randomTime}"
-                    
-            else:
-                message="Something went wrong when trying to log you in/out"
             
-            if(token):
-                chatId=os.getenv('TELEGRAM_CHATID')
-                client.sendTelegram(token, chatId, message)
-                
-            return message
+            try:
+                client.sign_in()
+                message="Correctly signed in/out."
+            except Error:
+                message="Something went wrong when trying to log you in/out."
+        else:
+            message="No working day for you!"
+            self.sendMessage=False
+        if(self.shouldSendMessage()):
+            chatId=os.getenv('TELEGRAM_CHATID')
+            message=f"{message} Waited {randomTime}"
+            client.sendTelegram(self.token, chatId, message)
+           
+            
+        return message
 
 if __name__ == "__main__":
-    print(Main.run())
+    c=Main()
+    print(c.run())

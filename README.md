@@ -18,6 +18,8 @@ You need Python 3.6+ (f-strings rock!), and [the requests library](https://pypi.
 You'll be prompted to enter your user and password the first time it starts, and that's it, you don't have to do anything else
 but to execute the script whenever you want to log in or out.
 
+It will wait a random time between 1 and 100 seconds to break the time pattern showed in woffu.
+
 ## How to integrate in AWS Lambda
 Open this link and find the region that your function is using:
 https://github.com/keithrozario/Klayers/tree/master/deployments/python3.8/arns
@@ -29,6 +31,8 @@ arn:aws:lambda:us-east-1:770693421928:layer:Klayers-python38-requests:6
 So now in your lambda function, add a layer using the ARN found.
 
 Also need to add WOFFU_USER and WOFFU_PASS variables in configuration.
+You should set the number of retries to 0 and the timeout to 2 min 30 sec. This high timeout is due the random wait functionality.
+
 ## Caveats
 ### Passwords
 This forks substitutes the JSON credentials file in favor of environment variables.
@@ -50,3 +54,4 @@ TELEGRAM_CHATID is the telegram chat id
 You can set up your bot chatting with @BotFather and get your token.
 Then you have to start a chat with your bot and send a /start command to it.
 To get the chat id you can query (maybe via postman) this url https://api.telegram.org/bot{token}/getUpdates
+Take in count that it will not notify if is not a working day for you unless you set to True the WOFFU_DEBUG environment variable.

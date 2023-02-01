@@ -31,7 +31,7 @@ arn:aws:lambda:us-east-1:770693421928:layer:Klayers-python38-requests:6
 So now in your lambda function, add a layer using the ARN found.
 
 Also need to add WOFFU_USER and WOFFU_PASS variables in configuration.
-To use the telegram bot use the following variables: TELEGRAM_CHATID and TELEGRAM_TOKEN
+
 You should set the number of retries to 0 and the timeout to 2 min 30 sec. This high timeout is due the random wait functionality.
 
 ## Caveats

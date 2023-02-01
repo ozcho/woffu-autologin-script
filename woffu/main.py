@@ -19,7 +19,7 @@ class Main:
         
     def run(self):
         print("Woffu Autologin Script\n")
-        randomTime=randint(1,100)
+        randomTime=randint(1,120)
         sleep(randomTime)
         username=os.getenv('WOFFU_USER')
         password=os.getenv('WOFFU_PASS')

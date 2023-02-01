@@ -12,9 +12,10 @@ class Woffu:
 
     # aux functions
     def sendTelegram(self, token, chatId, message):
+        
         url=f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chatId}&text={message}"
         return requests.get(url).json()
-
+        
     def _get_auth_headers(self):
         access_token = requests.post(
             "https://app.woffu.com/token",
@@ -82,6 +83,15 @@ class Woffu:
         return bank_holidays
 
     def is_working_day_for_me(self, day=None):
+        today=f"{date.today().year}-{date.today().month}-{date.today().day}"
+        isWorking = requests.get(
+            f"https://{self.domain}/api/users/{self.user_id}/diaries/absence/single_events?fromDate={today}T00:00:00.000Z&presence=false&toDate={today}T23:59:59.000Z",
+            headers = self.auth_headers
+        ).json()
+        print(isWorking)
+        return len(isWorking["Events"]) == 0
+
+    def is_working_day_for_me_OLD(self, day=None):
         if day is None:
             day = date.today()
         is_weekend = day.weekday() >= 5

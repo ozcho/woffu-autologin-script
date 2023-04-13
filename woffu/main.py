@@ -40,7 +40,7 @@ class Main:
         if(self.shouldSendMessage()):
             chatId=os.getenv('TELEGRAM_CHATID')
             message=f'''{message}
-            🕰️Wait {randomTime} seconds🕰️'''
+        🕰️Wait {randomTime} seconds🕰️'''
             client.sendTelegram(self.token, chatId, message)
            
             

@@ -12,7 +12,7 @@ jobs:
       - name: zip
         uses: montudor/action-zip@v0.1.0
         with:
-          args: cd woffu && zip -r ../bundle.zip .
+          args: zip -r -D bundle.zip ./woffu/*
       - name: default deploy
         uses: appleboy/lambda-action@master
         with:

@@ -31,15 +31,15 @@ class Main:
             
             try:
                 client.sign_in()
-                message="Correctly signed in/out."
+                message="✅Correctly signed in/out.✅"
             except Error:
-                message="Something went wrong when trying to log you in/out."
+                message="❌Something went wrong when trying to log you in/out.❌"
         else:
-            message="No working day for you!"
+            message="🎉🎊No working day for you!🎊🎉"
             self.sendMessage=False
         if(self.shouldSendMessage()):
             chatId=os.getenv('TELEGRAM_CHATID')
-            message=f"{message} Wait {randomTime} seconds"
+            message=f"{message} 🕰️Wait {randomTime} seconds🕰️"
             client.sendTelegram(self.token, chatId, message)
            
             

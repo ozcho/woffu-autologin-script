@@ -8,13 +8,20 @@ class Main:
     def __init__(self):
         self.sendMessage=True
         self.token=False
+        self.isWorkingDay=True
 
 
     def shouldSendMessage(self):
         if(not self.token):
             return False
         if(os.getenv("WOFFU_DEBUG")):
-            return True
+            if(self.isWorkingDay):
+                return True
+        else:
+            if(os.getenv("NOTIFY_HOLIDAY")):
+                return True
+            else:
+                return False
         return self.sendMessage
         
     def run(self):
@@ -27,7 +34,8 @@ class Main:
 
         client = Woffu(username, password)
         message="empty message"
-        if(client.is_working_day_for_me()):
+        self.isWorkingDay=client.is_working_day_for_me()
+        if(self.isWorkingDay):
             
             try:
                 client.sign_in()
